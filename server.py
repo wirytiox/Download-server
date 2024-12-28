@@ -10,9 +10,18 @@ import os
 import urllib
 def sanitize_filename(filename):
     invalid_chars = '<>:"/\\|?*'
+    
+    # Replace invalid characters with an underscore
     for char in invalid_chars:
         filename = filename.replace(char, "_")
+    
+    # Truncate the filename to 100 characters if it's too long
+    if len(filename) > 100:
+        filename = filename[:100]
+    
+    # Remove leading or trailing spaces
     return filename.strip()
+
 app = Flask(__name__)
 
 # Enable CORS for the specific Chrome extension origin
