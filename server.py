@@ -8,19 +8,29 @@ from urllib.parse import urlsplit
 import os
 
 import urllib
+import os
+
 def sanitize_filename(filename):
+    # Separate the name and the extension
+    basename, extension = os.path.splitext(filename)
+    
+    # Define invalid characters
     invalid_chars = '<>:"/\\|?*'
     
-    # Replace invalid characters with an underscore
+    # Replace invalid characters in the basename with an underscore
     for char in invalid_chars:
-        filename = filename.replace(char, "_")
+        basename = basename.replace(char, "_")
     
-    # Truncate the filename to 100 characters if it's too long
-    if len(filename) > 100:
-        filename = filename[:100]
+    # Truncate the basename to 100 characters (excluding the extension)
+    if len(basename) > 100:
+        basename = basename[:100]
     
-    # Remove leading or trailing spaces
-    return filename.strip()
+    # Remove leading or trailing spaces from the basename
+    basename = basename.strip()
+    
+    # Reattach the extension
+    return basename + extension
+
 
 app = Flask(__name__)
 
@@ -33,7 +43,9 @@ async def handle_download_request():
     try:
         # Your existing code here...
         data = request.json
-
+        debug=True
+        if debug:
+            print(data)
         
         required_keys = ["url", "cookies", "headers"]
         
